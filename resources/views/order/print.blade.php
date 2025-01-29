@@ -128,12 +128,15 @@
         <div id="receipt-data">
             <div class="top">
                 @if ($settings->logo_dark)
-                    <img src="{{ asset('storage/app/public/' . $settings->logo_dark) }}" height="41" width="183" style="margin:-5px 0;filter: brightness(0);" class="centered-image">
+                {{-- <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="" height="22"> --}}
+                <img src="{{ URL::asset('build/images/logonew.png') }}" class="invoice-header img-fluid" 
+                style="height: 80px;width:auto" alt="" height="22">
+                    {{-- <img src="{{ asset('resources/images/logonew.png') }}" height="41" width="183" style="margin:-5px 0;filter: brightness(0);" class="centered-image"> --}}
                 @endif
                 <br>
                 <div class="centered mt-1">
-                    <strong>Thimbiri Wewa Resort</strong>
-                    <p>Contact : <strong>+94 76 118 7676</strong></p>
+                    {{-- <strong>Lucky Transit Hotel</strong> --}}
+                    <p>Contact : <strong>011 226027</strong></p>
                 </div>
             </div>
 
