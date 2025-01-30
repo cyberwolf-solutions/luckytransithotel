@@ -172,7 +172,7 @@
 
         <div class="row" style="background-color:#E96E43;margin-top:30px">
             <div class="col-12" style="text-align: center">
-                <span style="color: #FFF">address</span>
+                <span style="color: #FFF">Lucky Transit Hotel, 660/8 Araliya m.w, Katunayake 11450</span>
             </div>
         </div>
     </div>
