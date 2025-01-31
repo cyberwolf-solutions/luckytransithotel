@@ -13,10 +13,11 @@
         }
 
         @media print {
-    body {
-        zoom: 0.85; /* Shrinks the content slightly */
-    }
-}
+            body {
+                zoom: 0.85;
+                /* Shrinks the content slightly */
+            }
+        }
 
 
         .invoice-container {
@@ -35,11 +36,11 @@
         }
 
         /* .invoice-container {
-                                            max-width: 800px;
-                                            margin: auto;
-                                            padding: 20px;
-                                            border: 1px solid #ddd;
-                                        } */
+                                                        max-width: 800px;
+                                                        margin: auto;
+                                                        padding: 20px;
+                                                        border: 1px solid #ddd;
+                                                    } */
         .a4-container {
             width: 100%;
             height: 297mm;
@@ -62,11 +63,11 @@
 
 
         .invoice-footer {
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    width: 100%;
-}
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+        }
 
 
 
@@ -193,19 +194,33 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $totalRows = 10; 
+                        $rowCount = count($data); 
+                    @endphp
+
                     @foreach ($data as $row)
                         <tr>
-                            {{-- <td>{{ $loop->iteration }}</td> --}}
                             <td>{{ $row->room_no }}</td>
                             <td>{{ $row->room_type }}</td>
                             <td>{{ $row->checkin }}</td>
                             <td>{{ $row->checkout }}</td>
-                            {{-- <td>{{ number_format($row->unit_price, 2) }}</td> --}}
                             <td>{{ number_format($row->total_amount, 2) }}</td>
                         </tr>
                     @endforeach
 
+                    @for ($i = $rowCount; $i < $totalRows; $i++)
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    @endfor
                 </tbody>
+
+
             </table>
 
             <div class="invoice-footer">

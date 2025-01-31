@@ -6,144 +6,210 @@
 
 @section('content')
     <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        @media print {
+            body {
+                zoom: 0.85;
+            }
+        }
+
+        .invoice-container {
+            width: 100%;
+            height: 297mm;
+            position: relative;
+            margin: auto;
+            padding: 20px;
+            max-width: 800px;
+        }
+
         body {
             background-color: #FFF !important;
+            font-family: Arial, sans-serif;
         }
+
+        .a4-container {
+            width: 100%;
+            height: 297mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .invoice-header img {
+            width: 120px;
+        }
+
+        .invoice-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #002147;
+        }
+
+        .table thead th {
+            background-color: #002147;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .table tfoot td {
+            font-weight: bold;
+        }
+
+        .border-top {
+            border-top: 2px solid #dee2e6;
+        }
+
+        .summary {
+            padding: 10px;
+            font-weight: bold;
+        }
+
+        .footer {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #E96E43;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .contact-info span {
+            display: block;
+        }
+
+        .invoice-footer {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+        }
+
     </style>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="row my-2 justify-content-center text-center">
-                <img src="{{ asset('storage/' . $settings->logo_dark) }}" class="img-fluid w-25" alt="">
-                <span class="fs-5">Thimbiri Wewa Resort</span>
-            </div>
-            <div class="row justify-content-between mt-5">
-                <div class="col">
-                    <h6>Checkout No</h6>
-                    <span>#{{ $settings->invoice($checkinCheckout->id) }}</span>
-                </div>
-                <div class="col">
-                    <h6>Checkout Date</h6>
-                    <span>{{ \Carbon\Carbon::parse($checkinCheckout->checkin)->format($settings->date_format) }}</span>
-                </div>
+    <div class="a4-container">
+        <div class="invoice-container">
 
-                <div class="col">
-                    <h6>Checkout Date</h6>
-                    <span>{{ \Carbon\Carbon::parse($checkinCheckout->checkout)->format($settings->date_format) }}</span>
-                </div>
+            <div class="row" style="margin-top: 50px">
+                <div class="col-6">
+                    <div class="contact-info mb-3">
+                        <div class="row">
+                            <div class="col-12" style="font-size: 30px; font-weight: bold; text-align: left">
+                                INVOICE
+                            </div>
+                            <div class="col-12" style="margin-top: 30px">
+                                <h5 class="fw-bold">Bill to</h5>
+                                <hr style="border: 1px solid black;">
+                            </div>
 
-            </div>
-            {{-- <hr> --}}
-            <div class="row mt-4">
-                <div class="col">
-                    <h6>Customer</h6>
-                    @if ($checkinCheckout->customer_id == 0)
-                        <p>Walking Customer</p>
-                    @else
-                        <p>{{ $checkinCheckout->customer->name }},</p>
-                        <p>{{ $checkinCheckout->customer->contact }},</p>
-                        <p>{{ $checkinCheckout->customer->email }},</p>
-                        <p>{{ $checkinCheckout->customer->address }}.</p>
-                    @endif
-                </div>
-                @if ($checkinCheckout->room_no != 0)
-                    <div class="col">
-                        <h6>Room No</h6>
-                        <p>{{ $checkinCheckout->room_no }}</p>
+                            <div class="col-12">
+                                <span><b>📞</b> {{ $checkinCheckout->customer->contact ?? 'Walking Customer' }}</span>
+                                <span><b>📧</b> {{ $checkinCheckout->customer->email ?? 'N/A' }}</span>
+                                <span><b>🌍</b> {{ $checkinCheckout->customer->address ?? 'N/A' }}</span>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    {{-- <div class="col">
-                        <h6>Room</h6>
-                        @php
-
-                            $roomName = App\Models\Room::where('room_no', $checkinCheckout->room_no)->value('name');
-                        @endphp
-                        <p>{{ $roomName }} - {{ $checkinCheckout->roomfacility->name }}</p>
-                    </div> --}}
-                    @php
-
-                        $roomName = App\Models\Room::where('room_no', $checkinCheckout->room_no)->value('name');
-                    @endphp
-                @endif
-
+                <div class="col-6">
+                    <div class="text-center mb-4">
+                        <img src="{{ URL::asset('build/images/logonew.png') }}" style="height: 200px;width:auto" class="invoice-header img-fluid" alt="" height="100">
+                        <p>{{ $settings->address }}</p>
+                    </div>
+                </div>
             </div>
-            <hr>
-            <div class="row">
-                <h6>Additional Payment</h6>
-                <div class="col-12">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            {{-- <th>#</th> --}}
-                            <th>Room No</th>
-                            <th>Order Item</th>
-                            <th>Quantity</th>
-                            <th>Order Date</th>
-                            <th>Item Price</th>
-                            <th>Total Cost</th>
 
-
-                        </thead>
-                        <tbody>
-
-                            @php
-                                $subtotal = 0;
-                            @endphp
-                            @foreach ($orders as $order)
-                                @foreach ($order->items as $item)
-                                    <tr>
-                                        {{-- <td>{{ $item->id }}</td> --}}
-                                        <td>{{ $order->room_id }}</td>
-                                        <td>{{ $item->meal->name }}</td>
-                                        <td>1 * {{ $item->quantity }}</td>
-                                        <td>{{ $order->order_date }}</td>
-                                        <td>{{ $settings->currency }} {{ $item->price }}.00</td>
-                                        <td>{{ $settings->currency }} {{ $item->total }}.00</td>
-                                        @php
-                                            $subtotal += $item->total;
-                                        @endphp
-
-                                    </tr>
-                                @endforeach
-                            @endforeach
-                        </tbody>
-
+            <table class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th>Room No</th>
+                        <th>Order Item</th>
+                        <th>Quantity</th>
+                        <th>Order Date</th>
+                        <th>Item Price</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $totalRows = 10;
+                        $rowCount = 0;
+                        $subtotal = 0;
+                    @endphp
+                
+                    @foreach ($orders as $order)
+                        @foreach ($order->items as $item)
+                            @if ($rowCount >= $totalRows)
+                                @break
+                            @endif
+                            <tr>
+                                <td>{{ $order->room_id }}</td>
+                                <td>{{ $item->meal->name }}</td>
+                                <td>1 * {{ $item->quantity }}</td>
+                                <td>{{ $order->order_date }}</td>
+                                <td>{{ $settings->currency }} {{ number_format($item->price, 2) }}</td>
+                                <td>{{ $settings->currency }} {{ number_format($item->total, 2) }}</td>
+                                @php
+                                    $subtotal += $item->total;
+                                    $rowCount++;
+                                @endphp
+                            </tr>
+                        @endforeach
+                        @if ($rowCount >= $totalRows)
+                            @break
+                        @endif
+                    @endforeach
+                
+                    @for ($i = $rowCount; $i < $totalRows; $i++)
                         <tr>
-                            <td colspan="6">
-                                <hr>
-                            </td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
+                    @endfor
+                </tbody>
+                
+            </table>
 
-
-                        <tfoot>
-                            <tr>
-                                <td colspan="4"></td>
-                                <td>
-                                    <h5 class="fw-bold">Sub Total</h5>
-
-                                </td>
-                                <td>
-
-
-                                    <h5 class="fw-bold"> {{ $settings->currency }} {{ $subtotal }}.00</h5>
-
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="6">
-                                    <hr>
-                                </td>
-                            </tr>
-
-
-                        </tfoot>
-
+            <div class="invoice-footer">
+                <div class="d-flex justify-content-end">
+                    <table class="table w-50">
+                        <tr>
+                            <td class="summary" style="background-color: #E96E43">Subtotal</td>
+                            <td>{{ $settings->currency }} {{ number_format($subtotal, 2) }}</td>
+                        </tr>
+                        <tr class="border-top" style="background-color: #002147; color: #FFF">
+                            <td class="summary">TOTAL</td>
+                            <td>{{ $settings->currency }} {{ number_format($subtotal, 2) }}</td>
+                        </tr>
                     </table>
                 </div>
+
+                <div class="mt-4">
+                    <span>Signature: ___________________</span>
+                    <span class="float-end">Date: ________________</span>
+                </div>
+
+                <div class="row" style="background-color:#E96E43; margin-top:30px">
+                    <div class="col-12 text-center">
+                        <span style="color: #FFF">Thimbiri Wewa Resort, 660/8 Araliya m.w, Katunayake 11450</span>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 @endsection
-
 
 @section('script')
     <script>

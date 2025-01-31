@@ -88,8 +88,8 @@
                 <div class="text-center mb-4">
                     {{-- <img src="{{ asset('images/logonew.png') }}" class="invoice-header img-fluid" alt="Logo"> --}}
 
-                    <img src="{{ URL::asset('build/images/logonew.png') }}" class="invoice-header img-fluid" 
-                    style="height: 200px;width:auto" alt="" height="22">
+                    <img src="{{ URL::asset('build/images/logonew.png') }}" class="invoice-header img-fluid"
+                        style="height: 200px;width:auto" alt="" height="22">
                     <p>{{ $settings->address }}</p>
                 </div>
             </div>
@@ -117,52 +117,65 @@
                 </tr>
             </thead>
             <tbody>
-               
+                @php
+                    $totalRows = 10;
+                    $rowCount = 1;  // Starting with 1 row since you already have one row with $data
+                @endphp
+            
+                <tr>
+                    <td>{{ $data->room_no }}</td>
+                    <td>{{ $data->room_type }}</td>
+                    <td>{{ $data->checkin }}</td>
+                    <td>{{ $data->checkout }}</td>
+                    <td>{{ number_format($data->total_amount, 2) }}</td>
+                </tr>
+            
+                @for ($i = $rowCount; $i < $totalRows; $i++)
                     <tr>
-                        {{-- <td>{{ $loop->iteration }}</td> --}}
-                        <td>{{ $data->room_no }}</td>
-                        <td>{{ $data->room_type }}</td>
-                        <td>{{ $data->checkin }}</td>
-                        <td>{{ $data->checkout }}</td>
-                        {{-- <td>{{ number_format($row->unit_price, 2) }}</td> --}}
-                        <td>{{ number_format($data->total_amount, 2) }}</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
                     </tr>
-             
+                @endfor
             </tbody>
+            
+
         </table>
 
         <div class="d-flex justify-content-end">
-          
-                <table class="table w-50">
-                    <tr>
-                        <td class="summary" style="background-color: #E96E43">Subtotal</td>
-                        {{-- <td>{{ $settings->currency }} {{ number_format($subtotal, 2) }}</td> --}}
 
-                        {{-- <td>{{ number_format($data->total_amount, 2) }}</td> --}}
-                        <td>{{ number_format($data->total_amount, 2) }}</td>
+            <table class="table w-50">
+                <tr>
+                    <td class="summary" style="background-color: #E96E43">Subtotal</td>
+                    {{-- <td>{{ $settings->currency }} {{ number_format($subtotal, 2) }}</td> --}}
 
-
-                        {{-- <td>100</td> --}}
-                    </tr>
-                    <tr>
-                        <td class="summary" style="background-color: #E96E43">Sales Tax</td>
-                        {{-- <td>{{ $settings->currency }} {{ number_format($tax, 2) }}</td> --}}
-                        <td>{{ number_format($data->discount, 2) }}</td>
-
-                        {{-- <td>{{ number_format($data->paid_amount, 2) }}</td> --}}
-
-                    </tr>
-                    <tr class="border-top" style="background-color:#002147;color:#FFF">
-                        <td class="summary">TOTAL</td>
-                        {{-- <td><strong>{{ $settings->currency }} {{ number_format($total, 2) }}</strong></td> --}}
-                        <td>{{ number_format($data->total_amount, 2) }}</td>
+                    {{-- <td>{{ number_format($data->total_amount, 2) }}</td> --}}
+                    <td>{{ number_format($data->total_amount, 2) }}</td>
 
 
-                        {{-- <td>{{ number_format($data->paid_amount, 2) }}</td> --}}
+                    {{-- <td>100</td> --}}
+                </tr>
+                <tr>
+                    <td class="summary" style="background-color: #E96E43">Sales Tax</td>
+                    {{-- <td>{{ $settings->currency }} {{ number_format($tax, 2) }}</td> --}}
+                    <td>{{ number_format($data->discount, 2) }}</td>
 
-                    </tr>
-                </table>
-           
+                    {{-- <td>{{ number_format($data->paid_amount, 2) }}</td> --}}
+
+                </tr>
+                <tr class="border-top" style="background-color:#002147;color:#FFF">
+                    <td class="summary">TOTAL</td>
+                    {{-- <td><strong>{{ $settings->currency }} {{ number_format($total, 2) }}</strong></td> --}}
+                    <td>{{ number_format($data->total_amount, 2) }}</td>
+
+
+                    {{-- <td>{{ number_format($data->paid_amount, 2) }}</td> --}}
+
+                </tr>
+            </table>
+
         </div>
 
         <div class="mt-4">
