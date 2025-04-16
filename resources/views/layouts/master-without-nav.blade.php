@@ -4,9 +4,9 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>@yield('title') | Thimbiri Wewa Resort Wilpattu</title>
+    <title>@yield('title') | Lucky Transit Hotel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Thimbiri Wewa Resort Wilpattu" name="description" />
+    <meta content="Lucky Transit Hotel" name="description" />
     <meta content="CyberWolf Solutions (Pvt) Ltd." name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ URL::asset('build/images/favicon.ico') }}">

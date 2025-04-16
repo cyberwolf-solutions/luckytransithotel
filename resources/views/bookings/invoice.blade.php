@@ -6,123 +6,253 @@
 
 @section('content')
     <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+            /* Adjust margins */
+        }
+
+        @media print {
+            body {
+                zoom: 0.85;
+                /* Shrinks the content slightly */
+            }
+        }
+
+
+        .invoice-container {
+            width: 100%;
+            height: 297mm;
+            /* A4 height */
+            position: relative;
+            margin: auto;
+            padding: 20px;
+            max-width: 800px;
+        }
+
         body {
             background-color: #FFF !important;
+            font-family: Arial, sans-serif;
         }
+
+        /* .invoice-container {
+                                                        max-width: 800px;
+                                                        margin: auto;
+                                                        padding: 20px;
+                                                        border: 1px solid #ddd;
+                                                    } */
+        .a4-container {
+            width: 100%;
+            height: 297mm;
+            /* Exact A4 height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* Push footer to the bottom */
+            position: relative;
+            overflow: hidden;
+            /* Prevent overflow */
+        }
+
+
+        .invoice-footer,
+        .summary-table,
+        .signature-section {
+            page-break-inside: avoid;
+        }
+
+
+        .invoice-footer {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+        }
+
+
+
         .invoice-header img {
-            width: 150px;
+            width: 120px;
         }
+
         .invoice-title {
-            font-size: 1.25rem;
+            font-size: 2rem;
             font-weight: bold;
+            color: #002147;
         }
+
         .table thead th {
-            background-color: #f8f9fa;
+            background-color: #002147;
+            color: #fff;
             text-transform: uppercase;
             font-size: 0.9rem;
         }
+
         .table tfoot td {
             font-weight: bold;
         }
+
         .border-top {
             border-top: 2px solid #dee2e6;
         }
+
         .fw-bold {
             font-weight: bold;
         }
+
+        .contact-info span {
+            display: block;
+        }
+
+        .summary {
+            /* background-color: orange; */
+            padding: 10px;
+            font-weight: bold;
+        }
+
+        .footer {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #E96E43;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
     </style>
+    <div class="a4-container">
+        <div class="invoice-container">
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="text-center my-4">
-                <img src="{{ asset('storage/' . $settings->logo_dark) }}" class="invoice-header img-fluid" alt="Logo">
-                <div class="invoice-title">Thimbiri Wewa Resort</div>
-                <p>{{ $settings->address }}</p>
-            </div>
+            <div class="row" style="margin-top: 50px">
+                <div class="col-6">
+                    <div class="contact-info mb-3">
 
-            @foreach ($data as $row)
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <span class="fw-bold">Invoice #:</span> {{ $settings->invoice($row->id) }}
-                    </div>
-                    <div>
-                        <span class="fw-bold">Checkout Date:</span> 
-                        {{ \Carbon\Carbon::parse($data1->checkout)->format($settings->date_format) }}
+                        <div class="row">
+                            <div class="col-12" style="font-size: 30px;font-weight:bold;text-align:left">
+                                INVOICE
+                            </div>
+                            <div class="col-12" style="margin-top: 30px">
+                                <h5 class="fw-bold">Bill to</h5>
+                                <hr style="border: 1px solid black;">
+
+                            </div>
+
+                            <div class="col-12">
+                                <span><b>📞</b> 0112 260 227</span>
+                                <span><b>📧</b> info@luckytransithotel.com</span>
+                                <span><b>🌍</b> www.luckytransithotel.com</span>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            @endforeach
 
-            <div class="mb-4">
-                <h6 class="fw-bold">Customer Details</h6>
-                <p>
-                    @if ($data1->customer_id == 0)
-                        Walking Customer
-                    @else
-                        {{ $data1->customer->name }}<br>
-                        {{ $data1->customer->contact }}<br>
-                        {{ $data1->customer->email }}<br>
-                        {{ $data1->customer->address }}
-                    @endif
-                </p>
+                <div class="col-6">
+                    <div class="text-center mb-4">
+                        {{-- <img src="{{ asset('images/logonew.png') }}" class="invoice-header img-fluid" alt="Logo"> --}}
+                        <img src="{{ URL::asset('build/images/logonew.png') }}" class="invoice-header img-fluid"
+                            style="height: 200px;width:auto" alt="" height="22">
+
+                        {{-- <div class="row">
+                        <div class="col-12">
+                            <div class="invoice-title" style="color: #E96E43;font-size:50px">Lucky</div>
+                        </div>
+                        <div class="col-12">
+                            <div class="invoice-title" style="margin-top: -10px">Transit Hotel</div>
+                        </div>
+                    </div> --}}
+                        <p>{{ $settings->address }}</p>
+                    </div>
+                </div>
             </div>
 
-            @if ($data1->room_no != 0)
-                <div class="mb-4">
-                    <h6 class="fw-bold">Room Details</h6>
-                    <p>Room No: {{ $data1->room_no }}</p>
-                    {{-- <p>Room Name: {{ $roomName }}</p> --}}
-                </div>
+
+
+
+
+
+            {{-- <p>
+            @if ($data1->customer_id == 0)
+                Walking Customer
+            @else
+                {{ $data1->customer->name }}<br>
+                {{ $data1->customer->contact }}<br>
+                {{ $data1->customer->email }}<br>
+                {{ $data1->customer->address }}
             @endif
+        </p> --}}
 
-            <div class="border-top my-4"></div>
-
-            <h6 class="fw-bold">Payment Details</h6>
-            <table class="table table-hover align-middle">
+            <table class="table table-bordered text-center">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Room Name</th>
-                        <th>Room Payment (LKR)</th>
-                        <th>Paid at Check-In (LKR)</th>
-                        <th>Additional Payment (LKR)</th>
-                        <th>Discount (%)</th>
+                        <th>Room no.</th>
+                        <th>Room type</th>
+                        <th>Checking</th>
+                        <th>Checkout</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data as $data)
+                    @php
+                        $totalRows = 10; 
+                        $rowCount = count($data); 
+                    @endphp
+
+                    @foreach ($data as $row)
                         <tr>
-                            <td>{{ $data->id }}</td>
-                            {{-- <td>{{ $roomName }}</td> --}}
-                            <td>{{ number_format($data->total_amount, 2) }}</td>
-                            <td>{{ number_format($data->paid_amount, 2) }}</td>
-                            <td>{{ number_format($data->additional_payment, 2) }}</td>
-                            <td>{{ $data->discount }}</td>
+                            <td>{{ $row->room_no }}</td>
+                            <td>{{ $row->room_type }}</td>
+                            <td>{{ $row->checkin }}</td>
+                            <td>{{ $row->checkout }}</td>
+                            <td>{{ number_format($row->total_amount, 2) }}</td>
                         </tr>
                     @endforeach
+
+                    @for ($i = $rowCount; $i < $totalRows; $i++)
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    @endfor
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4">Sub Total</td>
-                        <td colspan="2">{{ $settings->currency }} {{ number_format($data->additional_payment + $data->total_amount, 2) }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Due Amount</td>
-                        <td colspan="2">{{ $settings->currency }} {{ number_format($data->additional_payment + ($data->total_amount - $data->paid_amount), 2) }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Discount</td>
-                        <td colspan="2">{{ $data->discount }}%</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">VAT</td>
-                        <td colspan="2">{{ $settings->currency }} {{ number_format($data->payment ? $data->payment->vat : 0, 2) }}</td>
-                    </tr>
-                    <tr class="border-top">
-                        <td colspan="4"><h5 class="fw-bold">Total Payment</h5></td>
-                        <td colspan="2"><h5 class="fw-bold">{{ $settings->currency }} {{ number_format($data->sub_total, 2) }}</h5></td>
-                    </tr>
-                </tfoot>
+
+
             </table>
+
+            <div class="invoice-footer">
+                <div class="d-flex justify-content-end">
+                    <table class="table w-50">
+                        <tr>
+                            <td class="summary" style="background-color: #E96E43">Subtotal</td>
+                            <td>{{ number_format($row->total_amount, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="summary" style="background-color: #E96E43">Sales Tax</td>
+                            <td>{{ number_format($row->discount, 2) }}</td>
+                        </tr>
+                        <tr class="border-top" style="background-color:#002147;color:#FFF">
+                            <td class="summary">TOTAL</td>
+                            <td>{{ number_format($row->total_amount, 2) }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="mt-4">
+                    <span>Signature: ___________________</span>
+                    <span class="float-end">Date: ________________</span>
+                </div>
+
+                <div class="row" style="background-color:#E96E43;margin-top:30px">
+                    <div class="col-12 text-center">
+                        <span style="color: #FFF">Lucky Transit Hotel, 660/8 Araliya m.w, Katunayake 11450</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 @endsection

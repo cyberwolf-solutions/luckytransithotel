@@ -8,144 +8,184 @@
     <style>
         body {
             background-color: #FFF !important;
+            font-family: Arial, sans-serif;
         }
 
         .invoice-container {
-            background-color: #f9f9f9;
+            max-width: 800px;
+            margin: auto;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
         }
 
         .invoice-header img {
-            width: 150px;
-            margin-bottom: 10px;
+            width: 120px;
         }
 
         .invoice-title {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
-        }
-
-        .invoice-meta {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-
-        h6 {
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 8px;
+            color: #002147;
         }
 
         .table thead th {
-            background-color: #f1f1f1;
+            background-color: #002147;
+            color: #fff;
             text-transform: uppercase;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .table tfoot td {
             font-weight: bold;
         }
 
-        .total-row h5 {
-            font-size: 1.1rem;
+        .border-top {
+            border-top: 2px solid #dee2e6;
         }
 
-        .border-top {
-            border-top: 2px solid #dee2e6 !important;
+        .fw-bold {
+            font-weight: bold;
+        }
+
+        .contact-info span {
+            display: block;
+        }
+
+        .summary {
+            /* background-color: orange; */
+            padding: 10px;
+            font-weight: bold;
         }
     </style>
 
-    <div class="container-fluid invoice-container">
-        <div class="row text-center mb-4">
-            <img src="{{ asset('storage/' . $settings->logo_dark) }}" class="invoice-header img-fluid" alt="Logo">
-            <div class="invoice-title">Thimbiri Wewa Resort</div>
-            <p class="invoice-meta">{{ $settings->address }}</p>
-        </div>
+    <div class="invoice-container">
 
-        <div class="row justify-content-between align-items-center mb-4">
-            <div>
-                <span class="fw-bold">Invoice #:</span> {{ $settings->invoice($data->id) }}
-            </div>
-            <div>
-                <span class="fw-bold">Check-In Date:</span> {{ \Carbon\Carbon::parse($data->checkin)->format($settings->date_format) }}
-            </div>
-            <div>
-                <span class="fw-bold">Check-Out Date:</span> {{ \Carbon\Carbon::parse($data->checkout)->format($settings->date_format) }}
-            </div>
-        </div>
+        <div class="row" style="margin-top: 50px">
+            <div class="col-6">
+                <div class="contact-info mb-3">
 
-        <div class="row mb-4">
-            <div class="col">
-                <h6>Customer Details</h6>
-                @if ($data->customer_id == 0)
-                    <p>Walking Customer</p>
-                @else
-                    <p>{{ $data->customer->name }}</p>
-                    <p>{{ $data->customer->contact }}</p>
-                    <p>{{ $data->customer->email }}</p>
-                    <p>{{ $data->customer->address }}</p>
-                @endif
-            </div>
-            @if ($data->room_no != 0)
-                <div class="col">
-                    <h6>Room Details</h6>
-                    <p><strong>Room No:</strong> {{ $data->room_no }}</p>
-                    {{-- <p><strong>Room Name:</strong> {{ $roomName }}</p> --}}
+                    <div class="row">
+                        <div class="col-12" style="font-size: 30px;font-weight:bold;text-align:left">
+                            INVOICE
+                        </div>
+                        <div class="col-12" style="margin-top: 30px">
+                            <h5 class="fw-bold">Bill to</h5>
+                            <hr style="border: 1px solid black;">
+
+                        </div>
+
+                        <div class="col-12">
+                            <span><b>📞</b> 0112 260 227</span>
+                            <span><b>📧</b> info@luckytransithotel.com</span>
+                            <span><b>🌍</b> www.luckytransithotel.com</span>
+                        </div>
+                    </div>
+
                 </div>
-            @endif
+            </div>
+
+            <div class="col-6">
+                <div class="text-center mb-4">
+                    {{-- <img src="{{ asset('images/logonew.png') }}" class="invoice-header img-fluid" alt="Logo"> --}}
+
+                    <img src="{{ URL::asset('build/images/logonew.png') }}" class="invoice-header img-fluid"
+                        style="height: 200px;width:auto" alt="" height="22">
+                    <p>{{ $settings->address }}</p>
+                </div>
+            </div>
         </div>
 
-        <div class="border-top my-4"></div>
+        {{-- <p>
+            @if ($data1->customer_id == 0)
+                Walking Customer
+            @else
+                {{ $data1->customer->name }}<br>
+                {{ $data1->customer->contact }}<br>
+                {{ $data1->customer->email }}<br>
+                {{ $data1->customer->address }}
+            @endif
+        </p> --}}
 
-        <div class="row">
-            <h6>Payment Summary</h6>
-            <div class="col-12">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            {{-- <th>Room Name</th> --}}
-                            <th>Room Payment</th>
-                            <th>Paid at Check-In</th>
-                            <th>Additional Payment</th>
-                            <th>Discount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ $data->id }}</td>
-                            {{-- <td>{{ $roomName }}</td> --}}
-                            <td>LKR. {{ number_format($data->total_amount, 2) }}</td>
-                            <td>LKR. {{ number_format($data->paid_amount, 2) }}</td>
-                            <td>LKR. {{ number_format($data->additional_payment, 2) }}</td>
-                            <td>{{ $data->discount }}%</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="4"></td>
-                            <td>Sub Total:</td>
-                            <td>{{ $settings->currency }} {{ number_format($data->additional_payment + $data->total_amount, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4"></td>
-                            <td>Due Amount:</td>
-                            <td>{{ $settings->currency }} {{ number_format($data->additional_payment + ($data->total_amount - $data->paid_amount), 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4"></td>
-                            <td>VAT:</td>
-                            <td>{{ $settings->currency }} {{ number_format($data->payment ? $data->payment->vat : 0, 2) }}</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td colspan="4"></td>
-                            <td>Total Payment:</td>
-                            <td>{{ $settings->currency }} {{ number_format($data->sub_total, 2) }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Room no.</th>
+                    <th>Room type</th>
+                    <th>Checking</th>
+                    <th>Checkout</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $totalRows = 10;
+                    $rowCount = 1;  // Starting with 1 row since you already have one row with $data
+                @endphp
+            
+                <tr>
+                    <td>{{ $data->room_no }}</td>
+                    <td>{{ $data->room_type }}</td>
+                    <td>{{ $data->checkin }}</td>
+                    <td>{{ $data->checkout }}</td>
+                    <td>{{ number_format($data->total_amount, 2) }}</td>
+                </tr>
+            
+                @for ($i = $rowCount; $i < $totalRows; $i++)
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                @endfor
+            </tbody>
+            
+
+        </table>
+
+        <div class="d-flex justify-content-end">
+
+            <table class="table w-50">
+                <tr>
+                    <td class="summary" style="background-color: #E96E43">Subtotal</td>
+                    {{-- <td>{{ $settings->currency }} {{ number_format($subtotal, 2) }}</td> --}}
+
+                    {{-- <td>{{ number_format($data->total_amount, 2) }}</td> --}}
+                    <td>{{ number_format($data->total_amount, 2) }}</td>
+
+
+                    {{-- <td>100</td> --}}
+                </tr>
+                <tr>
+                    <td class="summary" style="background-color: #E96E43">Sales Tax</td>
+                    {{-- <td>{{ $settings->currency }} {{ number_format($tax, 2) }}</td> --}}
+                    <td>{{ number_format($data->discount, 2) }}</td>
+
+                    {{-- <td>{{ number_format($data->paid_amount, 2) }}</td> --}}
+
+                </tr>
+                <tr class="border-top" style="background-color:#002147;color:#FFF">
+                    <td class="summary">TOTAL</td>
+                    {{-- <td><strong>{{ $settings->currency }} {{ number_format($total, 2) }}</strong></td> --}}
+                    <td>{{ number_format($data->total_amount, 2) }}</td>
+
+
+                    {{-- <td>{{ number_format($data->paid_amount, 2) }}</td> --}}
+
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="mt-4">
+            <span>Signature: ___________________</span>
+            <span class="float-end">Date: ________________</span>
+        </div>
+
+        <div class="row" style="background-color:#E96E43;margin-top:30px">
+            <div class="col-12" style="text-align: center">
+                <span style="color: #FFF">Lucky Transit Hotel, 660/8 Araliya m.w, Katunayake 11450</span>
             </div>
         </div>
     </div>
